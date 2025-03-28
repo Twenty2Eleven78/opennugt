@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NUFC GameTime App v3.1</title>
+  <title>NUFC GameTime App v3.2</title>
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <!-- Optional: Font Awesome for icons -->
@@ -45,7 +45,7 @@
         <!-- Header -->
         <div class="row mb-3">
           <div class="col-12">
-            <h3>NUFC GameTime v3.1</h3>
+            <h3>NUFC GameTime v3.2</h3>
           </div>
         </div>
         <!-- END Header -->
@@ -155,9 +155,7 @@
                   <h5 class="card-title"><i class="fa-solid fa-gears"></i> Options</h5><hr>
                    <!-- Game Duration Section -->
                     <div class="mb-4">
-                      <label for="gameTimeSelect" class="form-label fw-bold mb-2">
-                         Game Duration
-                      </label>
+                      <label for="gameTimeSelect" class="form-label fw-bold mb-3">Game Duration </label>
                       <select id="gameTimeSelect" class="form-select mb-2">
                         <option value="2400">40 minutes</option>
                         <option value="3600" selected>60 minutes</option>
@@ -166,61 +164,54 @@
                       </select>
                       <small class="text-muted d-block mb-2">Each half will be 50% of total time</small>
                     </div>
-                    <hr>
+                    <hr class="my-4">
+
                   <!-- Team Management Section -->
-                  <div class="d-grid gap-3 mb-4">
-                    <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" 
-                      data-bs-toggle="modal" 
-                      data-bs-target="#rosterModal">
-                      <i class="fas fa-users me-2"></i>
-                      My Team Management
-                    </button>
-  
-                    <button class="btn btn-success d-flex align-items-center justify-content-center py-2" 
-                      id="shareButton">
-                      <i class="fas fa-share-alt me-2"></i>
-                      Send WhatsApp Report
-                    </button>
+                  <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Team Management</h6>
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" data-bs-toggle="modal" data-bs-target="#rosterModal">
+                        <i class="fas fa-users me-2"></i>
+                        My Team Management
+                      </button>
+                      <button class="btn btn-success d-flex align-items-center justify-content-center py-2" id="shareButton">
+                        <i class="fas fa-share-alt me-2"></i>
+                        Send WhatsApp Report
+                      </button>
+                    </div>
                   </div>
-                  <hr> 
+                  <hr class="my-4">
+
                   <!-- App Management Section -->
-                  <div class="d-grid gap-3">
-                    <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#releasenotesmodal">
-                      <i class="fa-solid fa-list me-2"></i>
-                      Release Notes
-                    </button>
-                    
-                    <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#resetConfirmModal">
-                      <i class="fa-solid fa-arrows-rotate me-2"></i>
-                      Reset GameTime App
-                    </button>
+
+                  <div class="mb-4">
+                    <h6 class="fw-bold mb-3">App Management</h6>
+                    <div class="d-grid gap-2">
+                      <!--Donate -->
+                      <button class="btn btn-warning d-flex align-items-center justify-content-center py-2" id="donateButton" data-bs-toggle="modal" data-bs-target="#donateModal">
+                        <i class="fa-solid fa-heart me-2"></i>
+                        Coming Soon.... Support Netherton U12 Girls Black
+                      </button>
+                      <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" data-bs-toggle="modal" data-bs-target="#releasenotesmodal">
+                        <i class="fa-solid fa-list me-2"></i>
+                        Release Notes
+                      </button>
+                      <button class="btn btn-danger d-flex align-items-center justify-content-center py-2" data-bs-toggle="modal" data-bs-target="#resetConfirmModal">
+                        <i class="fa-solid fa-arrows-rotate me-2"></i>
+                        Reset GameTime App
+                      </button>
+                    </div>
                   </div>
-                  <hr>
+                  <hr class="mb-4">
+
                   <!-- Feedback Section -->
-                  <div class="d-grid gap-3 mb-4">
-                    <button class="btn btn-primary d-flex align-items-center justify-content-center py-2" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#feedbackModal">
-                      <i class="fa-solid fa-comments me-2"></i>
-                      Provide Feedback
-                    </button>
-                  </div>
-                  <!-- END Feedback Section -->
-                   <hr>
-                  <!-- Donate Section -->
-                  <div class="d-grid">
-                    <button class="btn btn-warning d-flex align-items-center justify-content-center py-2" 
-                      id="donateButton"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#donateModal">
-                      <i class="fa-solid fa-heart me-2"></i>
-                      Coming Soon.... Support Netherton U12 Girls Black
-                    </button>
-                    <small class="text-muted text-center mt-2">Help Support Our Girls !</small>
+                  <div class="mb-4">
+                    <div class="d-grid">
+                      <button class="btn btn-primary d-flex align-items-center justify-content-center py-2" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                        <i class="fa-solid fa-comments me-2"></i>
+                        Provide Feedback
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -381,6 +372,28 @@
 </div>
 <!-- END Goal Modal -->
 
+<!-- Edit Event Modal -->
+<div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editEventModalLabel">Edit Event Time</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editEventForm">
+          <div class="mb-3">
+            <label for="editEventTime" class="form-label">Event Time (in minutes)</label>
+            <input type="number" class="form-control" id="editEventTime" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Edit Event Modal -->
+
 <!-- Roster Modal -->
   <div class="modal fade" id="rosterModal" tabindex="-1">
     <div class="modal-dialog">
@@ -473,24 +486,10 @@
           <h6 class="mb-3">Thank you for considering supporting<br>Netherton United U12 Girls Football Team!</h6>
           <p class="text-muted">Your support helps our girls both on and off the pitch encouraging teamwork, responsability, confidence, passion and overcoming adversity.</p>
         </div>
-
-        <!-- Donation Options -->
-        <div class="d-grid gap-3">
-          <!-- PayPal Button -->
-          <div class="text-center">
-            Donate Option Coming Soon.....
-          </div>
-
-          <!-- Divider -->
-          <div class="text-center">
-            <span class="text-muted">or</span>
-          </div>
-
           <!-- GoFundMe Button -->
-          <div class="text-center">
-            Donate Option Coming Soon.....
+          <div class="text-center mt-4">
+              <a href="https://gofund.me/2ba270e4" class="btn btn-danger btn-lg">Support Our Girls</a>
           </div>
-        </div>
 
         <!-- Additional Information -->
         <div class="text-left mt-4">
