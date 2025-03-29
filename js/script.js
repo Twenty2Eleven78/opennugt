@@ -25,7 +25,7 @@ const STATE = {
   matchEvents: [],
   gameTime: 3600, // Default 60 minutes in seconds
   isSecondHalf: false,
-  team1History: ['Netherton'], // Initialize with default name
+  team1History: ['Home Team'], // Initialize with default name
   team2History: ['Opposition'], // Initialize with default name
 };
  
@@ -682,7 +682,7 @@ function resetTracker() {
   elements.secondScoreElement.textContent = '0';
 
    // Reset team history
-   STATE.team1History = ['Netherton'];
+   STATE.team1History = ['Home Team'];
    STATE.team2History = ['Opposition'];
    Storage.save(STORAGE_KEYS.TEAM1_HISTORY, STATE.team1History);
    Storage.save(STORAGE_KEYS.TEAM2_HISTORY, STATE.team2History);
@@ -927,9 +927,9 @@ function initializeApp() {
   elements.secondScoreElement.textContent = secondScore;
 
   // Load saved team names
-  const team1Name = Storage.load(STORAGE_KEYS.TEAM1_NAME, 'Netherton');
+  const team1Name = Storage.load(STORAGE_KEYS.TEAM1_NAME, 'Home Team');
   const team2Name = Storage.load(STORAGE_KEYS.TEAM2_NAME, 'Opposition');
-  STATE.team1History = Storage.load(STORAGE_KEYS.TEAM1_HISTORY, ['Netherton']);
+  STATE.team1History = Storage.load(STORAGE_KEYS.TEAM1_HISTORY, ['Home Team']);
   STATE.team2History = Storage.load(STORAGE_KEYS.TEAM2_HISTORY, ['Opposition']);
   elements.Team1NameElement.textContent = team1Name;
   elements.Team2NameElement.textContent = team2Name;
