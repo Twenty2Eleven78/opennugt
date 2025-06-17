@@ -105,7 +105,7 @@ const RosterManager = (function() {
 
       // Check for duplicates
       if (roster.includes(trimmedName)) {
-        M.toast({html: 'Player already exists!'});
+        showNotification('Player already exists!', 'warning');
         return false;
       }
 

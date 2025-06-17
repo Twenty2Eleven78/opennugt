@@ -107,6 +107,39 @@ function formatTime(seconds) {
     .join(':');
 }
 
+// Helper function to update the timer button UI
+function updateTimerButtonUI(status, timeToDisplay) {
+  const button = elements.startPauseButton;
+  button.innerHTML = ''; // Clear existing content (icons, text, old span)
+
+  let buttonText = '';
+  let buttonClass = 'btn-danger'; // Default to danger for paused, half-time, full-time
+
+  if (status === 'initial') {
+    buttonText = 'Start Game';
+  } else if (status === 'running') {
+    buttonText = 'Game in Progress';
+    buttonClass = 'btn-success';
+  } else if (status === 'paused') {
+    buttonText = 'Game is Paused';
+  } else if (status === 'half-time') {
+    buttonText = 'Half Time Break';
+  } else if (status === 'full-time') {
+    buttonText = 'Full Time';
+  }
+
+  // Reset classes and add new ones. Ensure timer-btn-inline is always present.
+  button.className = 'btn timer-btn-inline ' + buttonClass;
+  button.textContent = buttonText;
+
+  const timeSpan = document.createElement('span');
+  timeSpan.id = 'stopwatch';
+  timeSpan.className = 'timer-badge';
+  timeSpan.setAttribute('role', 'timer');
+  timeSpan.textContent = formatTime(timeToDisplay);
+  button.appendChild(timeSpan);
+}
+
 // Get current Seconds
 function getCurrentSeconds() {
   if (!STATE.isRunning || !STATE.startTimestamp) return STATE.seconds;
@@ -138,33 +171,21 @@ function startStopwatch() {
     STATE.intervalId = setInterval(updateStopwatchDisplay, 100);
   
   //Change running style
-  startPauseButton.classList.remove('btn-danger');
-  startPauseButton.classList.add('btn-success');
-  startPauseButton.textContent = 'Game in Progress';
-  // Add text back
-  const currentSeconds = getCurrentSeconds();
-  const timeSpan = document.createElement('span');
-  timeSpan.id = 'stopwatch';
-  timeSpan.className = 'timer-badge';
-  timeSpan.textContent = formatTime(currentSeconds);
-  startPauseButton.appendChild(timeSpan);
-  showNotification('Game Started!', 'success');
+    // Starting the timer
+    STATE.isRunning = true;
+    if (!STATE.startTimestamp) {
+      STATE.startTimestamp = Date.now() - (STATE.seconds * 1000);
+    }
+    STATE.intervalId = setInterval(updateStopwatchDisplay, 100);
+    updateTimerButtonUI('running', getCurrentSeconds());
+    showNotification('Game Started!', 'success');
   } else {
-    //Change running style
-    startPauseButton.classList.remove('btn-sucess');
-    startPauseButton.classList.add('btn-danger');
-    startPauseButton.textContent = 'Game is Paused';
-    const currentSeconds = getCurrentSeconds();
-    const timeSpan = document.createElement('span');
-    timeSpan.id = 'stopwatch';
-    timeSpan.className = 'timer-badge';
-    timeSpan.textContent = formatTime(currentSeconds);
-    startPauseButton.appendChild(timeSpan);
     // Pausing the timer
     clearInterval(STATE.intervalId);
     STATE.isRunning = false;
     STATE.seconds = getCurrentSeconds();
     STATE.startTimestamp = null;
+    updateTimerButtonUI('paused', getCurrentSeconds());
     showNotification('Game Paused', 'danger');
   }
   // save state
@@ -195,14 +216,7 @@ function handleHalfTime() {
     STATE.isRunning = false;
   }
     // Update UI
-    startPauseButton.classList.remove('btn-success');
-    startPauseButton.classList.add('btn-danger');
-    startPauseButton.textContent = 'Half Time Break';
-    const timeSpan = document.createElement('span');
-    timeSpan.id = 'stopwatch';
-    timeSpan.className = 'timer-badge';
-    timeSpan.textContent = formatTime(halfTimeSeconds);
-    startPauseButton.appendChild(timeSpan);
+    updateTimerButtonUI('half-time', halfTimeSeconds);
     clearInterval(STATE.intervalId);
     
   // Update state
@@ -232,13 +246,7 @@ function handleFullTime() {
     
   }
     // Update UI
-    startPauseButton.classList.remove('btn-success');
-    startPauseButton.classList.add('btn-danger');
-    startPauseButton.textContent = 'Full Time';
-    const timeSpan = document.createElement('span');
-    timeSpan.id = 'stopwatch';
-    timeSpan.className = 'timer-badge';
-    startPauseButton.appendChild(timeSpan);
+    updateTimerButtonUI('full-time', STATE.seconds); // Or STATE.gameTime, depending on desired display
     clearInterval(STATE.intervalId);
     STATE.startTimestamp = null;
  
@@ -403,7 +411,7 @@ showNotification(`Goal scored by ${team2Name}!`, 'danger');
 
 // Goal Modal Auto close
 function closeGoalModal() {
-  document.getElementById('goalModalClose').click();
+  bootstrap.Modal.getInstance(document.getElementById('goalModal')).hide();
   return false;
 }
 
@@ -594,6 +602,17 @@ function handleEditEventFormSubmission(event) {
 
   // Get the new time from the input
   const newMinutes = parseInt(document.getElementById('editEventTime').value, 10);
+
+  // Validate input
+  if (isNaN(newMinutes)) {
+    showNotification('Invalid input: Time must be a number.', 'warning');
+    return;
+  }
+  if (newMinutes < 0) {
+    showNotification('Invalid input: Time cannot be negative.', 'warning');
+    return;
+  }
+
   const newRawTime = newMinutes * 60;
 
   // Update the event time
@@ -679,16 +698,9 @@ function resetTracker() {
   STATE.isSecondHalf = false;
   
   // Reset UI
-  updateStopwatchDisplay();
+  updateStopwatchDisplay(); // Updates STATE.seconds to 0 if called after STATE.seconds = 0
   updateLog();
-  startPauseButton.classList.remove('btn-sucess');
-  startPauseButton.classList.add('btn-danger');
-  startPauseButton.textContent = 'Start Game';
-  const timeSpan = document.createElement('span');
-  timeSpan.id = 'stopwatch';
-  timeSpan.className = 'timer-badge';
-  timeSpan.textContent = "00:00";
-  startPauseButton.appendChild(timeSpan);
+  updateTimerButtonUI('initial', 0);
 
   // Reset scoreboard
   elements.firstScoreElement.textContent = '0';
@@ -808,7 +820,7 @@ if (STATE.data && STATE.data.length > 0) {
 // Share to WhatsApp function
 function shareToWhatsApp() {
   if (STATE.data.length === 0) {
-    M.toast({html: 'No goals to share yet!'});
+        showNotification('No goals to share yet!', 'info');
     return;
   }
   const formattedLog = formatLogForWhatsApp();
@@ -964,16 +976,27 @@ function initializeApp() {
   if (team1Input) team1Input.placeholder = team1Name;
   if (team2Input) team2Input.placeholder = team2Name;
   
-  // If timer was running, calculate elapsed time and restart
-  if (STATE.isRunning && STATE.startTimestamp) {
-    const currentTime = Date.now();
-    const elapsedSeconds = Math.floor((currentTime - STATE.startTimestamp) / 1000);
-    STATE.seconds = elapsedSeconds;
-    startStopwatch();
-  }
- 
   // Update UI with saved data
-  updateStopwatchDisplay();
+  updateStopwatchDisplay(); // This updates STATE.seconds and the time in the span if it exists
+
+  if (STATE.isRunning) {
+    // If it was running, startStopwatch will correctly set the 'running' UI
+    // STATE.startTimestamp must have been persisted.
+    startStopwatch();
+  } else {
+    // Not running, determine specific non-running state
+    let currentStatus = 'initial';
+    // Ensure STATE.gameTime is loaded from storage *before* this logic. (It is)
+    if (STATE.seconds >= STATE.gameTime && STATE.gameTime > 0) {
+        currentStatus = 'full-time';
+    } else if (STATE.isSecondHalf && STATE.seconds === STATE.gameTime / 2 && STATE.gameTime > 0) {
+        currentStatus = 'half-time';
+    } else if (STATE.seconds > 0) {
+        currentStatus = 'paused';
+    }
+    // If STATE.seconds is 0 and not caught by other conditions, it remains 'initial'
+    updateTimerButtonUI(currentStatus, STATE.seconds);
+  }
   updateLog();
 
 }
